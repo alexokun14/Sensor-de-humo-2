@@ -74,38 +74,37 @@
         <h1>Código Fuente</h1>
         <nav>
             <ul>
-                <li><a href="Programación.html">Programación</a></li>
-                <li><a href="Integracion wifi.html">Integración WiFi</a></li>
+                <li><a href="Programación.html">Atras</a></li>
             </ul>
         </nav>
 
         <div class="code-container">
-            <h2>Código 1: Programación del Sensor</h2>
+            <h2>Código 1: Emisor</h2>
             <pre><code>
 #include <VirtualWire.h>
 
-const int sensorHumoPin = A0; // Pin analógico donde conectas el sensor de humo
-const int ledPin = 8;         // Pin donde conectas el LED
-int umbralHumo = 150;         // Umbral para detección de humo (ajústalo según el sensor)
+const int sensorHumoPin = A0; 
+const int ledPin = 8;     
+int umbralHumo = 150;   
 
 void setup() {
-  pinMode(sensorHumoPin, INPUT); // Pin del sensor de humo
-  pinMode(ledPin, OUTPUT);       // Pin del LED
+  pinMode(sensorHumoPin, INPUT); 
+  pinMode(ledPin, OUTPUT);   
 
-  vw_set_tx_pin(12); // Pin de transmisión RF
-  vw_setup(2000);    // Velocidad de transmisión
+  vw_set_tx_pin(12);
+  vw_setup(2000);  
 }
 
 void loop() {
-  int valorHumo = analogRead(sensorHumoPin); // Leer el valor del sensor de humo
+  int valorHumo = analogRead(sensorHumoPin); 
 
-  if (valorHumo > umbralHumo) { // Si el humo excede el umbral
-    digitalWrite(ledPin, HIGH); // Encender el LED
-    const char *mensaje = "Humo detectado";  // Mensaje a enviar
-    vw_send((uint8_t *)mensaje, strlen(mensaje)); // Enviar mensaje
-    vw_wait_tx(); // Esperar a que el mensaje sea enviado
+  if (valorHumo > umbralHumo) { 
+    digitalWrite(ledPin, HIGH);
+    const char *mensaje = "Humo detectado";  
+    vw_send((uint8_t *)mensaje, strlen(mensaje)); 
+    vw_wait_tx(); 
   } else {
-    digitalWrite(ledPin, LOW); // Apagar el LED si no se detecta humo
+    digitalWrite(ledPin, LOW);
   }
 
   delay(1000); // Esperar 1 segundo antes de volver a medir
@@ -126,40 +125,40 @@ void loop() {
         </div>
 
         <div class="code-container">
-            <h2>Código 2: Integración WiFi</h2>
+            <h2>Código 2: Emisor</h2>
             <pre><code>
 #include <VirtualWire.h>
 
-const int ledPin = 8;  // Pin donde conectas el LED en el receptor
+const int ledPin = 8;
 
 void setup() {
-  pinMode(ledPin, OUTPUT);  // Configurar el pin del LED como salida
-  Serial.begin(9600);       // Iniciar el monitor serie
-  vw_set_rx_pin(11);        // Pin de recepción RF
-  vw_setup(2000);           // Velocidad de transmisión
-  vw_rx_start();            // Iniciar el receptor
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+  vw_set_rx_pin(11);
+  vw_setup(2000);
+  vw_rx_start(); 
 }
 
 void loop() {
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
 
-  if (vw_get_message(buf, &buflen)) {  // Si recibe un mensaje
+  if (vw_get_message(buf, &buflen)) {
     Serial.print("Mensaje recibido: ");
     for (int i = 0; i < buflen; i++) {
-      Serial.print((char)buf[i]);  // Mostrar el mensaje en el monitor serie
+      Serial.print((char)buf[i]);
     }
     Serial.println();
 
     // Si el mensaje es "Humo detectado", encender el LED
     if (strncmp((char *)buf, "Humo detectado", buflen) == 0) {
-      digitalWrite(ledPin, HIGH);  // Encender el LED
+      digitalWrite(ledPin, HIGH);
     }
   } else {
-    digitalWrite(ledPin, LOW);  // Apagar el LED si no se recibe señal
+    digitalWrite(ledPin, LOW);
   }
 
-  delay(100);  // Pequeña pausa para evitar saturación
+  delay(100)
 }
 
 void setup() {
@@ -172,7 +171,6 @@ void setup() {
     Serial.println("Conectado a WiFi");
 }
 void loop() {
-    // Lógica de integración
 }
             </code></pre>
         </div>
